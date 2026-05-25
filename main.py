@@ -8,7 +8,7 @@ from PIL import Image
 import io
 
  
-DISEASE_MODEL_ID = "1aXVmndI_JHNb7PjMtGAbbEv9MToW700L"
+DISEASE_MODEL_ID = "1FOgbElGYtivNyKEA_-wybhzt9o3WEQ6T"
 FIBER_MODEL_ID = "1Mep2V55UrM70gJmmmYEdJToxr4hT9xm_"
 
 def download_model_if_missing(file_name, file_id):
