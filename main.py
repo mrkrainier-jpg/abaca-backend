@@ -7,7 +7,6 @@ import numpy as np
 from PIL import Image
 import io
 
- 
 DISEASE_MODEL_ID = "1FOgbElGYtivNyKEA_-wybhzt9o3WEQ6T"
 FIBER_MODEL_ID = "1Mep2V55UrM70gJmmmYEdJToxr4hT9xm_"
 
@@ -19,9 +18,8 @@ def download_model_if_missing(file_name, file_id):
     else:
         print(f"{file_name} already exists.")
 
-download_model_if_missing("model.h5", DISEASE_MODEL_ID)
+download_model_if_missing("model_v2.h5", DISEASE_MODEL_ID)
 download_model_if_missing("fiber_model.h5", FIBER_MODEL_ID)
-
 
 app = FastAPI()
 
@@ -33,28 +31,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-class Keras3Bridge(tf.keras.layers.InputLayer):
-    def __init__(self, **kwargs):
-        if 'batch_shape' in kwargs:
-            kwargs['batch_input_shape'] = kwargs.pop('batch_shape')
-        kwargs.pop('optional', None)
-        super().__init__(**kwargs)
-
-
-disease_model = tf.keras.models.load_model(
-    "model.h5", 
-    custom_objects={'InputLayer': Keras3Bridge},
-    compile=False
-)
+disease_model = tf.keras.models.load_model("model_v2.h5", compile=False)
 disease_classes = ["Bunchy Top", "Mosaic", "Normal"]
 
-fiber_model = tf.keras.models.load_model(
-    "fiber_model.h5", 
-    compile=False
-)
+fiber_model = tf.keras.models.load_model("fiber_model.h5", compile=False)
 fiber_classes = ["EF", "S2", "S3"]
-# -----------------------------------
 
 def preprocess_image(image_bytes):
     img = Image.open(io.BytesIO(image_bytes)).convert("RGB")
