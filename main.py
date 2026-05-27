@@ -1,25 +1,10 @@
 import os
-import gdown
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 import tensorflow as tf
 import numpy as np
 from PIL import Image
 import io
-
-DISEASE_MODEL_ID = "1JQ8_LkR0i-B8VoPfDzBqRlOnPEHV61mN"
-FIBER_MODEL_ID = "1-WppBMqRKVy92EKQ_0GtDh0e-K16mbaz"
-
-def download_model_if_missing(file_name, file_id):
-    if not os.path.exists(file_name):
-        print(f"Downloading {file_name} from Google Drive...")
-        url = f"https://drive.google.com/uc?id={file_id}"
-        gdown.download(url, file_name, quiet=False)
-    else:
-        print(f"{file_name} already exists.")
-
-download_model_if_missing("disease_model.keras", DISEASE_MODEL_ID)
-download_model_if_missing("fiber_model.keras", FIBER_MODEL_ID)
 
 app = FastAPI()
 
@@ -35,7 +20,7 @@ disease_model = tf.keras.models.load_model("disease_model.keras", compile=False)
 disease_classes = ["Bunchy Top", "Mosaic", "Normal"]
 
 fiber_model = tf.keras.models.load_model("fiber_model.keras", compile=False)
-fiber_classes = ["EF", "S2", "S3"]
+fiber_classes = ['EF', 'G', 'H', 'I', 'JK', 'M1', 'S2', 'S3', 'Y1', 'Y2']
 
 def preprocess_image(image_bytes):
     img = Image.open(io.BytesIO(image_bytes)).convert("RGB")
