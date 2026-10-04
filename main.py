@@ -30,7 +30,7 @@ def preprocess_image(image_bytes):
 
 @app.get("/")
 def read_root():
-    return {"status": "Abaca API is Live"}
+    return {"status": "Abaca API Live"}
 
 @app.post("/predict_disease")
 async def predict_disease(file: UploadFile = File(...)):
@@ -40,6 +40,10 @@ async def predict_disease(file: UploadFile = File(...)):
         predictions = disease_model.predict(image)
         class_idx = np.argmax(predictions[0])
         confidence = float(predictions[0][class_idx])
+        
+        if confidence < 0.65:
+            return {"prediction": "Invalid Scan", "confidence": confidence}
+            
         return {"prediction": disease_classes[class_idx], "confidence": confidence}
     except Exception as e:
         return {"prediction": f"Error: {str(e)}", "confidence": 0.0}
@@ -52,6 +56,10 @@ async def predict_fiber(file: UploadFile = File(...)):
         predictions = fiber_model.predict(image)
         class_idx = np.argmax(predictions[0])
         confidence = float(predictions[0][class_idx])
+        
+        if confidence < 0.65:
+            return {"prediction": "Invalid Scan", "confidence": confidence}
+            
         return {"prediction": fiber_classes[class_idx], "confidence": confidence}
     except Exception as e:
         return {"prediction": f"Error: {str(e)}", "confidence": 0.0}
